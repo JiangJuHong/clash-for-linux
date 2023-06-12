@@ -1,3 +1,5 @@
+[TOC]
+
 # 项目介绍
 
 此项目是通过使用开源项目[clash](https://github.com/Dreamacro/clash)作为核心程序，再结合脚本实现简单的代理功能。
@@ -6,9 +8,22 @@
 
 <br>
 
+# 使用须知
+
+- 运行本项目建议使用root用户，或者使用 sudo 提权。
+- 使用过程中如遇到问题，请优先查已有的 [issues](https://github.com/wanhebin/clash-for-linux/issues)。
+- 在进行issues提交前，请替换提交内容中是敏感信息（例如：订阅地址）。
+- 本项目是基于 [clash](https://github.com/Dreamacro/clash) 、[yacd](https://github.com/haishanh/yacd) 进行的配置整合，关于clash、yacd的详细配置请去原项目查看。
+- 此项目不提供任何订阅信息，请自行准备Clash订阅地址。
+- 运行前请手动更改`.env`文件中的`CLASH_URL`变量值，否则无法正常运行。
+- 当前在RHEL系列和Debian系列Linux系统中测试过，其他系列可能需要适当修改脚本。
+- 支持 x86_64/aarch64 平台
+
+<br>
+
 # 使用教程
 
-### 下载项目
+## 下载项目
 
 下载项目
 
@@ -23,9 +38,11 @@ $ cd clash-for-linux
 $ vim .env
 ```
 
+> **注意：** `.env` 文件中的变量 `CLASH_SECRET` 为自定义 Clash Secret，值为空时，脚本将自动生成随机字符串。
+
 <br>
 
-### 启动程序
+## 启动程序
 
 直接运行脚本文件`start.sh`
 
@@ -38,7 +55,7 @@ $ cd clash-for-linux
 - 运行启动脚本
 
 ```bash
-$ sh start.sh
+$ sudo bash start.sh
 
 正在检测订阅地址...
 Clash订阅地址可访问！                                      [  OK  ]
@@ -49,7 +66,7 @@ Clash订阅地址可访问！                                      [  OK  ]
 正在启动Clash服务...
 服务启动成功！                                             [  OK  ]
 
-Clash Dashboard 访问地址：http://IP:9090/ui
+Clash Dashboard 访问地址：http://<ip>:9090/ui
 Secret：xxxxxxxxxxxxx
 
 请执行以下命令加载环境变量: source /etc/profile.d/clash.sh
@@ -87,7 +104,7 @@ https_proxy=http://127.0.0.1:7890
 
 <br>
 
-### 重启程序
+## 重启程序
 
 如果需要对Clash配置进行修改，请修改 `conf/config.yaml` 文件。然后运行 `restart.sh` 脚本进行重启。
 
@@ -96,7 +113,7 @@ https_proxy=http://127.0.0.1:7890
 
 <br>
 
-### 停止程序
+## 停止程序
 
 - 进入项目目录
 
@@ -107,7 +124,7 @@ $ cd clash-for-linux
 - 关闭服务
 
 ```bash
-$ sh shutdown.sh
+$ sudo bash shutdown.sh
 
 服务关闭成功，请执行以下命令关闭系统代理：proxy_off
 
@@ -122,7 +139,7 @@ $ proxy_off
 
 <br>
 
-### Clash Dashboard
+## Clash Dashboard
 
 - 访问 Clash Dashboard
 
@@ -130,7 +147,7 @@ $ proxy_off
 
 - 登录管理界面
 
-在`API Base URL`一栏中输入：http://IP:9090 ，在`Secret(optional)`一栏中输入启动成功后输出的Secret。
+在`API Base URL`一栏中输入：http://\<ip\>:9090 ，在`Secret(optional)`一栏中输入启动成功后输出的Secret。
 
 点击Add并选择刚刚输入的管理界面地址，之后便可在浏览器上进行一些配置。
 
@@ -143,14 +160,10 @@ $ proxy_off
 
 # 常见问题
 
-1.部分Ubuntu系统默认的 shell `/bin/sh` 被更改为 `dash`，运行脚本会出现报错。建议使用 `bash xxx.sh` 运行脚本。
+1. 部分Linux系统默认的 shell `/bin/sh` 被更改为 `dash`，运行脚本会出现报错（报错内容一般会有 `-en [ OK ]`）。建议使用 `bash xxx.sh` 运行脚本。
 
+2. 部分用户在UI界面找不到代理节点，基本上是因为厂商提供的clash配置文件是经过base64编码的，且配置文件格式不符合clash配置标准。
 
-<br>
-
-# 使用须知
-
-- 此项目不提供任何订阅信息，请自行准备Clash订阅地址。
-- 运行前请手动更改`.env`文件中的`CLASH_URL`变量值，否则无法正常运行。
-- 当前在RHEL系列和Debian系列Linux系统中测试过，其他系列可能需要适当修改脚本。
-- 支持 x86_64/aarch64 平台
+   目前此项目已集成自动识别和转换clash配置文件的功能。如果依然无法使用，则需要通过自建或者第三方平台（不推荐，有泄露风险）对订阅地址转换。
+   
+3. 程序日志中出现`error: unsupported rule type RULE-SET`报错，解决方法查看官方[WIKI](https://github.com/Dreamacro/clash/wiki/FAQ#error-unsupported-rule-type-rule-set)
